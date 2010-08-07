@@ -1,5 +1,5 @@
 Tabulator is a JavaScript library for reading data from (and writing it to)
-HTML tables. It uses jQuery <http://jquery.com/> to find headers and cells in
+HTML tables. It uses jQuery (http://jquery.com/) to find headers and cells in
 structured tables, and can turn those into arrays of either arrays or objects
 with keys corresponding to the column headers. The following table, for
 instance:
@@ -20,4 +20,4 @@ var people = tabulator('#people').objects();
 
 The idea being that then you can use that array of JavaScript objects as
 input into another process. For instance, you could visualize them using
-Protovis <http://vis.stanford.edu/protovis/>.
+Protovis (http://vis.stanford.edu/protovis/).
