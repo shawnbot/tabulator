@@ -6,6 +6,8 @@ var tabulator = function(table) {
   var t = $(table),
       cols = t.find('thead tr:last-child th'),
       rows = t.find('tbody tr'),
+      cellSelector = 'td',
+      cellText = function(j, cell) { return $(cell).text(); },
       ops = {};
 
   var tab = {};
@@ -61,6 +63,15 @@ var tabulator = function(table) {
     return this;
   };
 
+  tab.cell = function(selector) {
+    if (arguments.length) {
+      cellSelector = selector;
+      return this;
+    } else {
+      return cellSelector;
+    }
+  };
+
   tab.column = function(name, f) {
     if (f == undefined) {
       delete ops[name];
@@ -76,7 +87,7 @@ var tabulator = function(table) {
     var c = this.columns();
     var r = this.rows();
     return r.map(function(tr, i) {
-      var cells = $(tr).children('td').map(function(j, cell) { return $(cell).text(); }).get();
+      var cells = $(tr).children(cellSelector).map(cellText).get();
       if (c && c.length) {
         var row = {};
         c.forEach(function(col, j) {
@@ -118,7 +129,7 @@ floatOrZero = function(v) {
 
 floatOrString = function(v) {
   var n = parseFloat(v);
-  return isNaN(n) ? 0 : n;
+  return isNaN(n) ? String(v) : n;
 };
 
 getter = function(prop) {
