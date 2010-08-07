@@ -17,3 +17,7 @@ instance:
 can be read into a list of objects with one line of JavaScript:
 
 var people = tabulator('#people').objects();
+
+The idea being that then you can use that array of JavaScript objects as
+input into another process. For instance, you could visualize them using
+Protovis <http://vis.stanford.edu/protovis/>.
