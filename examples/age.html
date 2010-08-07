@@ -5,6 +5,44 @@
     <script type="text/javascript" src="../lib/protovis-d3.2.js"></script>
     <script type="text/javascript" src="../src/tabulator.js"></script>
     <style type="text/css">
+
+      html, body {
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        background: #fff;
+        color: #000;
+        padding: 1em;
+      }
+
+      table {
+        border: 1px solid #666;
+        border-collapse: collapse;
+      }
+
+      th, td {
+        padding: .25em;
+        text-align: left;
+      }
+
+      tr:nth-child(even) { background: #eee; }
+
+      thead tr {
+        background: #666;
+        color: #fff;
+      }
+
+      th {
+        min-width: 4em;
+        font-weight: normal;
+      }
+
+      table, div {
+        margin: 0 0 1em 0;
+      }
+
     </style>
   </head>
   <body>
@@ -24,6 +62,9 @@
       </tbody>
     </table>
 
+    <div id="bars"></div>
+    <div id="pie"></div>
+
     <script type="text/javascript+protovis">
 
       var table = tabulator('#data')
@@ -31,18 +72,18 @@
         .column('Age', parseInt)
         .column('Sex', String)
         .column('Location', String);
-      var data = table.data();
 
-      data = data.sort(sortBy('Age', true));
+      var data = table.data().sort(sortBy('Age', true));
 
-      var w = 600,
-          h = 300,
+      var w = 400,
+          h = 250,
           s = 30,
           color = pv.Scale.ordinal('Female', 'Male').range('#f77', '#68a'),
           fy = pv.Scale.ordinal(data, function(d) d.Name).splitFlush(0, h - s),
           fx = pv.Scale.linear(0, pv.max(data, function(d) d.Age)).range(0, w - 20);
 
       var bars = new pv.Panel()
+        .canvas('bars')
         .width(w)
         .height(h)
         .add(pv.Bar)
@@ -58,18 +99,18 @@
             .textMargin(8)
             .textStyle('#fff')
             .font('18px Helvetica');
-
       bars.render();
 
-      function count(d, prop) {
-        var ups = pv.nest(d).key(getter(prop)).sortKeys().rollup(getter('length'));
-        return pv.flatten(ups).key(prop).key('count').array();
+      function count(d, f, key) {
+        var ups = pv.nest(d).key(f).sortKeys().rollup(getter('length'));
+        return pv.flatten(ups).key(key).key('count').array();
       }
 
-      var sexes = count(data, 'Sex'),
+      var sexes = count(data, getter('Sex'), 'Sex'),
           a = pv.Scale.linear(0, data.length).range(0, 2 * Math.PI);
 
       var pie = new pv.Panel()
+        .canvas('pie')
         .width(h)
         .height(h)
         .add(pv.Wedge)
@@ -84,9 +125,9 @@
             .textAngle(0)
             .textStyle('#fff')
             .font('18px Helvetica')
-            .text(function(d) d.Sex);
-
+            .text(function(d) d.Sex + ' (' + d.count + ')');
       pie.render();
+
     </script>
   </body>
 </html>
